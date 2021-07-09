@@ -38,6 +38,7 @@ class CustomerProvider extends ChangeNotifier{
         'name': customerModel.name,
         'address': customerModel.address,
         'phone': customerModel.phone,
+        'password': customerModel.password,
         'billAmount': customerModel.billAmount,
         'billState': 'due',
         'dueAmount': null,
@@ -72,6 +73,7 @@ class CustomerProvider extends ChangeNotifier{
             name: element.doc['name'],
             address: element.doc['address'],
             phone: element.doc['phone'],
+            password: element.doc['password'],
             billAmount: element.doc['billAmount'],
             activity: element.doc['activity'],
             deductKey: element.doc['deductKey'],
@@ -94,6 +96,7 @@ class CustomerProvider extends ChangeNotifier{
       'name': publicProvider.customerModel.name,
       'address': publicProvider.customerModel.address,
       'phone': publicProvider.customerModel.phone,
+      'password':publicProvider.customerModel.password,
       'billAmount': publicProvider.customerModel.billAmount,
       'activity': publicProvider.customerModel.activity,
       'deductKey': publicProvider.customerModel.deductKey,
@@ -173,7 +176,7 @@ class CustomerProvider extends ChangeNotifier{
             _paidCustomerList.add(customerModel);
           }
         });
-        print(_paidCustomerList.length);
+        //print(_paidCustomerList.length);
       });
       notifyListeners();
     }catch(error){
@@ -181,7 +184,7 @@ class CustomerProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> updateCustomerState(num id,PublicProvider publicProvider)async {
+  Future<void> updateCustomerState(int id,PublicProvider publicProvider)async {
     FirebaseFirestore.instance.collection('Customers').doc('$id').update({
       'billState': publicProvider.customerModel.billState,
       'dueAmount': publicProvider.customerModel.dueAmount,

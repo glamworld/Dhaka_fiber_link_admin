@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:new_dish_admin_panlel/provider/billing_provider.dart';
 import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +16,6 @@ class _BillingInfoTableBodyState extends State<BillingInfoTableBody> {
     String? billMonth;
     final Size size = MediaQuery.of(context).size;
     final PublicProvider publicProvider  = Provider.of<PublicProvider>(context);
-    final BillingProvider billingProvider = Provider.of<BillingProvider>(context);
     setState(() {
       widget.billingMonth=='1'?billMonth='Jan':
       widget.billingMonth=='2'?billMonth='Feb':

@@ -127,6 +127,7 @@ class _PaidBillCustomerListState extends State<PaidBillCustomerList> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    _tableHeaderBuilder(size, 'Id'),
                     _tableHeaderBuilder(size, 'Name'),
                     _tableHeaderBuilder(size, 'Phone'),
                     _tableHeaderBuilder(size, 'Address'),
@@ -152,6 +153,7 @@ class _PaidBillCustomerListState extends State<PaidBillCustomerList> {
               physics: ClampingScrollPhysics(),
               itemCount: filteredCustomers.length,
               itemBuilder: (context,index)=>PaidCustomerListTableBody(
+                id: '${filteredCustomers[index].id}',
               name: filteredCustomers[index].name,
               address: filteredCustomers[index].address,
               phone: filteredCustomers[index].phone,

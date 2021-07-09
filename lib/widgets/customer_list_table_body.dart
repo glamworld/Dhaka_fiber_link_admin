@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class CustomerListTableBody extends StatefulWidget {
   int? id;
-  String? name,address,phone,activity,package,deductKey,billAmount;
+  String? name,address,phone,password,activity,package,deductKey,billAmount;
 
-  CustomerListTableBody({this.id,this.name,this.address,this.phone,this.activity,this.package,this.deductKey,this.billAmount});
+  CustomerListTableBody({this.id,this.name,this.address,this.phone,this.password,this.activity,this.package,this.deductKey,this.billAmount});
 
   @override
   _State createState() => _State();
@@ -31,6 +31,10 @@ class _State extends State<CustomerListTableBody> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              _tableBodyBuilder(
+                  size,
+                  '${widget.id!}',
+                  publicProvider,customerProvider),
               _tableBodyBuilder(
                   size,
                   widget.name!,
@@ -121,6 +125,7 @@ class _State extends State<CustomerListTableBody> {
                         publicProvider.customerModel.billAmount=widget.billAmount;
                         publicProvider.customerModel.deductKey=widget.deductKey;
                         publicProvider.customerModel.package=widget.package;
+                        publicProvider.customerModel.password=widget.password;
                       });
                     },
                   ),

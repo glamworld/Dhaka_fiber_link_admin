@@ -1,6 +1,6 @@
 class HeadModel{
   String? id;
-  String? title;
+  String? headOfAccount;
   String? name;
   String? details;
   String? debit;
@@ -9,5 +9,5 @@ class HeadModel{
   String? credit;
 
   HeadModel(
-      {this.id, this.title, this.name, this.details, this.debit, this.credit,this.month,this.year});
+      {this.id, this.headOfAccount, this.name, this.details, this.debit, this.credit,this.month,this.year});
 }

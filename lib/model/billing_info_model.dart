@@ -8,6 +8,7 @@ class BillingInfoModel{
   String? billingYear;
   String? billingNumber;
   String? transactionId;
+  String? state;
   String? amount;
   String? timeStamp;
   String? payDate;
@@ -22,6 +23,7 @@ class BillingInfoModel{
     this.billingYear,
     this.billingNumber,
     this.transactionId,
+    this.state,
     this.timeStamp,
     this.amount,
     this.payDate});

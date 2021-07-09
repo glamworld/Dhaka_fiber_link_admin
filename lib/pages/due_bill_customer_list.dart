@@ -147,6 +147,7 @@ class _DueBillCustomerListState extends State<DueBillCustomerList> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    _tableHeaderBuilder(size, 'Id'),
                     _tableHeaderBuilder(size, 'Name'),
                     _tableHeaderBuilder(size, 'Phone'),
                     _tableHeaderBuilder(size, 'Address'),
@@ -191,6 +192,7 @@ class _DueBillCustomerListState extends State<DueBillCustomerList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          _tableBodyBuilder(size, '${filteredCustomers[index].id!}', publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size, filteredCustomers[index].name!, publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size, filteredCustomers[index].phone!, publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size,filteredCustomers[index].address!,publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),

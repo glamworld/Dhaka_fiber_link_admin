@@ -20,9 +20,9 @@ class Variables{
         Entry('All Bill Man'),
       ]),
       // Entry('Head', <Entry>[
-      //   Entry('Head of Account'),
-      //   Entry('Cash Book'),
       //   Entry('Bank Book'),
+      //   Entry('Cash Book'),
+      //   Entry('Summary'),
       // ]),
     ];
     return data;

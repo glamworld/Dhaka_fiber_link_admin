@@ -128,6 +128,7 @@ class _AllCustomerListState extends State<AllCustomerList> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    _tableHeaderBuilder(size, 'Id'),
                     _tableHeaderBuilder(size, 'Name'),
                     _tableHeaderBuilder(size, 'Phone'),
                     _tableHeaderBuilder(size, 'Address'),
@@ -159,6 +160,7 @@ class _AllCustomerListState extends State<AllCustomerList> {
                   address: filteredCustomers[index].address,
                   activity: filteredCustomers[index].activity,
                   phone: filteredCustomers[index].phone,
+                  password: filteredCustomers[index].password,
                   billAmount: filteredCustomers[index].billAmount,
                   deductKey: filteredCustomers[index].deductKey,
                   package: filteredCustomers[index].package,

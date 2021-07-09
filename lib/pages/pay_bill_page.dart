@@ -23,7 +23,9 @@ class _PayBillState extends State<PayBill> {
   DateTime? currentMonth;
   DateTime? billMonth;
   var months;
+  String? _payBy;
   TextEditingController _payDate = TextEditingController(text: '');
+  List<String> _payList = ['Bank','Cash'];
 
   void _initializeData(BillingProvider auth,PublicProvider publicProvider) {
     auth.billingInfoModel.payBy = '';
@@ -219,20 +221,41 @@ class _PayBillState extends State<PayBill> {
                             Container(
                               height: 40,
                               width: size.width * .15,
-                              child: Center(
-                                child: TextField(
-                                  keyboardType: TextInputType.text,
-                                  decoration: formDecoration(size).copyWith(
-                                    fillColor: Color(0xffF4F7F5),
-                                  ),
-                                  onChanged: (val) {
+                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: size.height*.01),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.blueGrey,width: 1),
+                                  borderRadius: BorderRadius.all(Radius.circular(5))
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  isDense: true,
+                                  isExpanded: true,
+                                  value:_payBy,
+                                  hint: Text('Select Pay method',style: TextStyle(
+                                    color: Colors.grey,
+                                    fontFamily: 'OpenSans',
+                                    fontSize: size.height*.022,)),
+                                  items:_payList.map((category){
+                                    return DropdownMenuItem(
+                                      child: Text(category, style: TextStyle(
+                                          color: Colors.grey[900],
+                                          fontSize: size.height * .022,fontFamily: 'OpenSans'
+                                      ),
+                                      ),
+                                      value: category,
+                                    );
+                                  }).toList(),
+                                  onChanged: (newVal){
                                     setState(() {
-                                      auth.billingInfoModel.payBy = val;
+                                      _payBy = newVal as String;
+                                      auth.billingInfoModel.payBy=_payBy;
                                     });
                                   },
+
+                                  dropdownColor: Colors.white,
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -273,81 +296,6 @@ class _PayBillState extends State<PayBill> {
                               ),
                               //borderRadius: BorderRadius.all(Radius.circular(5))
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: size.height * .04),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        width: size.width * 5,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                                height: 50,
-                                width: size.width * .07,
-                                child: Center(
-                                    child: Text(
-                                  'Billing Number: ',
-                                  style: TextStyle(fontSize: size.height * .02),
-                                ))),
-                            Container(
-                              height: 40,
-                              width: size.width * .15,
-                              child: Center(
-                                child: TextField(
-                                  keyboardType: TextInputType.text,
-                                  decoration: formDecoration(size).copyWith(
-                                    fillColor: Color(0xffF4F7F5),
-                                  ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      auth.billingInfoModel.billingNumber = val;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: size.width * 5,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                                height: 50,
-                                width: size.width * .07,
-                                child: Center(
-                                    child: Text(
-                                  'Transaction Id: ',
-                                  style: TextStyle(fontSize: size.height * .02),
-                                ))),
-                            Container(
-                              height: 40,
-                              width: size.width * .15,
-                              child: Center(
-                                child: TextField(
-                                  keyboardType: TextInputType.text,
-                                  decoration: formDecoration(size).copyWith(
-                                    fillColor: Color(0xffF4F7F5),
-                                  ),
-                                  onChanged: (val) {
-                                    setState(() {
-                                      auth.billingInfoModel.transactionId = val;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )
                           ],
                         ),
                       ),
@@ -463,11 +411,10 @@ class _PayBillState extends State<PayBill> {
     int due=int.parse(auth.billingInfoModel.amount!);
     num dueNum=due*months;
     String dueAmount='$dueNum';
-    if (auth.billingInfoModel.payBy!.isNotEmpty &&
-        auth.billingInfoModel.billingNumber!.isNotEmpty &&
-        auth.billingInfoModel.transactionId!.isNotEmpty &&
-        auth.billingInfoModel.amount!=null) {
+    if (auth.billingInfoModel.payBy!.isNotEmpty && auth.billingInfoModel.amount!=null) {
       setState(() {
+        auth.billingInfoModel.transactionId = 'None';
+        auth.billingInfoModel.billingNumber = 'None';
         auth.billingInfoModel.billingMonth = '${_date!.month}';
         auth.billingInfoModel.billingYear = '${_date!.year}';
         publicProvider.customerModel.lastEntryMonth='${_date!.month}';

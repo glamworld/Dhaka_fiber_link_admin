@@ -5,9 +5,9 @@ import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:provider/provider.dart';
 
 class PaidCustomerListTableBody extends StatefulWidget {
-  String? name,address,phone,package,deductKey,billAmount,activity;
+  String? id,name,address,phone,package,deductKey,billAmount,activity;
 
-  PaidCustomerListTableBody({this.name,this.address,this.phone,
+  PaidCustomerListTableBody({this.id,this.name,this.address,this.phone,
     this.package,this.deductKey,this.billAmount,this.activity});
   @override
   _PaidCustomerListTableBodyState createState() => _PaidCustomerListTableBodyState();
@@ -28,6 +28,10 @@ class _PaidCustomerListTableBodyState extends State<PaidCustomerListTableBody> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              _tableBodyBuilder(
+                  size,
+                  widget.id!,
+                  publicProvider,customerProvider),
               _tableBodyBuilder(
                   size,
                   widget.name!,

@@ -30,6 +30,7 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
   TextEditingController _address = TextEditingController(text: '');
   TextEditingController _billAmount = TextEditingController(text: '');
   TextEditingController _phone = TextEditingController(text: '');
+  TextEditingController _password = TextEditingController(text: '');
 
   void _initializeData(PublicProvider publicProvider) {
     setState(() => _counter++);
@@ -39,6 +40,8 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
     _billAmount =
         TextEditingController(text: publicProvider.customerModel.billAmount);
     _phone = TextEditingController(text: publicProvider.customerModel.phone);
+    _password =
+        TextEditingController(text: publicProvider.customerModel.password);
     _deductKey = publicProvider.customerModel.deductKey;
     _package = publicProvider.customerModel.package;
     _activity = publicProvider.customerModel.activity;
@@ -79,74 +82,11 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                   ),
                 ),
                 SizedBox(height: size.height * .08),
-                Container(
-                  width: size.width * .3,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 10, vertical: size.height * .01),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blueGrey, width: 1),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      isDense: true,
-                      isExpanded: true,
-                      value: _activity,
-                      hint: Text('Select Activity',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontFamily: 'OpenSans',
-                            fontSize: size.height * .022,
-                          )),
-                      items: _activityList.map((category) {
-                        return DropdownMenuItem(
-                          child: Text(
-                            category,
-                            style: TextStyle(
-                                color: Colors.grey[900],
-                                fontSize: size.height * .022,
-                                fontFamily: 'OpenSans'),
-                          ),
-                          value: category,
-                        );
-                      }).toList(),
-                      onChanged: (newVal) {
-                        setState(() {
-                          _activity = newVal as String;
-                          publicProvider.customerModel.activity = _activity;
-                        });
-                      },
-                      dropdownColor: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(height: size.height * .04),
                 Row(
                   children: [
-                    Expanded(child: _textBuilder(size, 'Name', publicProvider)),
-                    SizedBox(width: size.height * .04),
-                    Expanded(
-                        child: _textBuilder(size, 'Address', publicProvider)),
-                  ],
-                ),
-                SizedBox(height: size.height * .04),
-
-                Row(
-                  children: [
-                    Expanded(
-                        child: _textBuilder(size, 'Phone', publicProvider)),
-                    SizedBox(width: size.height * .04),
-                    Expanded(
-                        child:
-                            _textBuilder(size, 'Bill Amount', publicProvider)),
-                  ],
-                ),
-                SizedBox(height: size.height * .04),
-
-                Row(
-                  children: [
-                    ///Deduct Key Dropdown
                     Expanded(
                       child: Container(
+                        width: size.width * .3,
                         padding: EdgeInsets.symmetric(
                             horizontal: 10, vertical: size.height * .01),
                         decoration: BoxDecoration(
@@ -157,14 +97,14 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                           child: DropdownButton(
                             isDense: true,
                             isExpanded: true,
-                            value: _deductKey,
-                            hint: Text('Select Deduct Key',
+                            value: _activity,
+                            hint: Text('Select Activity',
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontFamily: 'OpenSans',
                                   fontSize: size.height * .022,
                                 )),
-                            items: _deductList.map((category) {
+                            items: _activityList.map((category) {
                               return DropdownMenuItem(
                                 child: Text(
                                   category,
@@ -178,8 +118,9 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                             }).toList(),
                             onChanged: (newVal) {
                               setState(() {
-                                _deductKey = newVal as String;
-                                publicProvider.customerModel.deductKey = _deductKey;
+                                _activity = newVal as String;
+                                publicProvider.customerModel.activity =
+                                    _activity;
                               });
                             },
                             dropdownColor: Colors.white,
@@ -234,6 +175,81 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                     ),
                   ],
                 ),
+                SizedBox(height: size.height * .04),
+                Row(
+                  children: [
+                    Expanded(child: _textBuilder(size, 'Name', publicProvider)),
+                    SizedBox(width: size.height * .04),
+                    Expanded(
+                        child: _textBuilder(size, 'Address', publicProvider)),
+                  ],
+                ),
+                SizedBox(height: size.height * .04),
+
+                Row(
+                  children: [
+                    Expanded(
+                        child: _textBuilder(size, 'Phone', publicProvider)),
+                    SizedBox(width: size.height * .04),
+                    Expanded(
+                        child: _textBuilder(size, 'Password', publicProvider)),
+                  ],
+                ),
+                SizedBox(height: size.height * .04),
+
+                Row(
+                  children: [
+                    Expanded(
+                        child:
+                            _textBuilder(size, 'Bill Amount', publicProvider)),
+                    SizedBox(width: size.height * .04),
+
+                    ///Deduct Key Dropdown
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: size.height * .01),
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Colors.blueGrey, width: 1),
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            isDense: true,
+                            isExpanded: true,
+                            value: _deductKey,
+                            hint: Text('Select Deduct Key',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: 'OpenSans',
+                                  fontSize: size.height * .022,
+                                )),
+                            items: _deductList.map((category) {
+                              return DropdownMenuItem(
+                                child: Text(
+                                  category,
+                                  style: TextStyle(
+                                      color: Colors.grey[900],
+                                      fontSize: size.height * .022,
+                                      fontFamily: 'OpenSans'),
+                                ),
+                                value: category,
+                              );
+                            }).toList(),
+                            onChanged: (newVal) {
+                              setState(() {
+                                _deductKey = newVal as String;
+                                publicProvider.customerModel.deductKey =
+                                    _deductKey;
+                              });
+                            },
+                            dropdownColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 SizedBox(height: size.height * .08),
 
@@ -279,7 +295,9 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                   ? _billAmount
                   : hint == 'Phone'
                       ? _phone
-                      : null,
+                      : hint == 'Password'
+                          ? _password
+                          : null,
       keyboardType: hint == 'Phone'
           ? TextInputType.phone
           : hint == 'Bill Amount'
@@ -299,7 +317,10 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                   : hint == 'Bill Amount'
                       ? publicProvider.customerModel.billAmount =
                           _billAmount.text
-                      : publicProvider.customerModel.phone = _phone.text;
+                      : hint == 'Password'
+                          ? publicProvider.customerModel.password =
+                              _password.text
+                          : publicProvider.customerModel.phone = _phone.text;
         });
       },
     );

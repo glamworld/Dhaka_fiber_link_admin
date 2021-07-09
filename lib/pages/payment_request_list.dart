@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:new_dish_admin_panlel/model/billing_info_model.dart';
+import 'package:new_dish_admin_panlel/provider/billing_provider.dart';
 import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:new_dish_admin_panlel/widgets/form_decoration.dart';
 import 'package:new_dish_admin_panlel/widgets/payment_request_table_body.dart';
@@ -12,10 +14,24 @@ class PaymentRequestList extends StatefulWidget {
 
 class _PaymentRequestListState extends State<PaymentRequestList> {
   bool _isLoading=false;
+  var _controller = TextEditingController();
+  List<BillingInfoModel> filteredBills = [];
+  List<BillingInfoModel> billList = [];
+  int _counter = 0;
+  String? searchString;
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final PublicProvider publicProvider = Provider.of<PublicProvider>(context);
+    final BillingProvider billingProvider = Provider.of<BillingProvider>(context);
+    if (_counter == 0) {
+      setState(() {
+        billList=billingProvider.pendingBillList;
+        filteredBills=billList;
+        _counter++;
+      });
+    }
+
     return Container(
       width: publicProvider.pageWidth(size),
       child: Column(
@@ -35,9 +51,15 @@ class _PaymentRequestListState extends State<PaymentRequestList> {
                         child: Padding(
                           padding: EdgeInsets.only(left: 10),
                           child: TextFormField(
+                            controller: _controller,
                             decoration: formDecoration(size).copyWith(
-                              labelText: 'Search by Transection ID',
+                              labelText: 'Search by Transaction ID',
                             ),
+                            onChanged: (string){
+                              setState(() {
+                                searchString=string;
+                              });
+                            },
                           ),
                         ),
                       ),
@@ -46,7 +68,14 @@ class _PaymentRequestListState extends State<PaymentRequestList> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: size.height * .008),
                         child: OutlinedButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            setState(() {
+                              filteredBills = billList
+                                  .where((u) => (u.transactionId!
+                                  .contains(searchString!.toLowerCase())))
+                                  .toList();
+                            });
+                          },
                           child: Padding(
                               padding: EdgeInsets.symmetric(vertical: size.height*.011),
                               child: Icon(Icons.search,color: Colors.grey)),
@@ -57,7 +86,9 @@ class _PaymentRequestListState extends State<PaymentRequestList> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: size.height * .008),
                         child: OutlinedButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            _controller.clear();
+                          },
                           child: Padding(
                               padding: EdgeInsets.symmetric(vertical: size.height*.011),
                               child: Icon(Icons.clear,color: Colors.redAccent)),
@@ -68,7 +99,12 @@ class _PaymentRequestListState extends State<PaymentRequestList> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: size.height * .008),
                         child: OutlinedButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            setState(() {
+                              billList=billingProvider.pendingBillList;
+                              filteredBills=billList;
+                            });
+                          },
                           child: Padding(
                               padding: EdgeInsets.symmetric(vertical: size.height*.011),
                               child: Icon(Icons.refresh,color: Color(0xff006F64),)),
@@ -92,10 +128,12 @@ class _PaymentRequestListState extends State<PaymentRequestList> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    _tableHeaderBuilder(size, 'Id'),
                     _tableHeaderBuilder(size, 'Name'),
                     _tableHeaderBuilder(size, 'Phone'),
+                    _tableHeaderBuilder(size, 'Paid By'),
                     _tableHeaderBuilder(size, 'Billing Number'),
-                    _tableHeaderBuilder(size, 'Transection ID'),
+                    _tableHeaderBuilder(size, 'Transaction ID'),
                     _tableHeaderBuilder(size, 'Billing Month'),
                     _tableHeaderBuilder(size, 'Payment date'),
                     _tableHeaderBuilder(size, 'Amount'),
@@ -116,8 +154,20 @@ class _PaymentRequestListState extends State<PaymentRequestList> {
             child: ListView.builder(
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
-              itemCount: 50,
-              itemBuilder: (context,index)=>PaymentRequestTableBody(index: index),
+              itemCount: filteredBills.length,
+              itemBuilder: (context,index)=>PaymentRequestTableBody(
+                id: filteredBills[index].id,
+                userId: filteredBills[index].userID,
+                name: filteredBills[index].name,
+                phone: filteredBills[index].userPhone,
+                paidBy: filteredBills[index].payBy,
+                billingNumber: filteredBills[index].billingNumber,
+                transactionId: filteredBills[index].transactionId,
+                billingMonth: filteredBills[index].billingMonth,
+                billingYear: filteredBills[index].billingYear,
+                payDate: filteredBills[index].payDate,
+                billAmount: filteredBills[index].amount,
+              ),
             ),
           )
           //     :Center(child: Column(

@@ -3,6 +3,7 @@ class CustomerModel{
   String? name;
   String? address;
   String? phone;
+  String? password;
   String? billAmount;
   String? billState;
   String? dueAmount;
@@ -18,6 +19,7 @@ class CustomerModel{
       this.name,
       this.address,
       this.phone,
+      this.password,
       this.billAmount,
       this.billState,
       this.dueAmount,

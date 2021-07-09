@@ -65,8 +65,45 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                     fontWeight: FontWeight.bold,
                   ),),
                 ),
-                SizedBox(height: size.height*.08),
-
+                SizedBox(height: size.height*.05),
+                ///Package Dropdown
+                Container(
+                  width: size.width*.3,
+                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: size.height*.01),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueGrey,width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(5))
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      isDense: true,
+                      isExpanded: true,
+                      value:_package,
+                      hint: Text('Select Package',style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'OpenSans',
+                        fontSize: size.height*.022,)),
+                      items:_packageList.map((category){
+                        return DropdownMenuItem(
+                          child: Text(category, style: TextStyle(
+                              color: Colors.grey[900],
+                              fontSize: size.height * .022,fontFamily: 'OpenSans'
+                          ),
+                          ),
+                          value: category,
+                        );
+                      }).toList(),
+                      onChanged: (newVal){
+                        setState(() {
+                          _package = newVal as String;
+                          auth.customerModel.package=_package;
+                        });
+                      },
+                      dropdownColor: Colors.white,
+                    ),
+                  ),
+                ),
+                SizedBox(height: size.height*.04),
                 Row(
                   children: [
                     Expanded(child: _textBuilder(size, 'Name',auth)),
@@ -80,13 +117,15 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                   children: [
                     Expanded(child: _textBuilder(size, 'Phone',auth)),
                     SizedBox(width: size.height*.04),
-                    Expanded(child: _textBuilder(size, 'Bill Amount',auth)),
+                    Expanded(child: _textBuilder(size, 'Password',auth)),
                   ],
                 ),
                 SizedBox(height: size.height*.04),
 
                 Row(
                   children: [
+                    Expanded(child: _textBuilder(size, 'Bill Amount',auth)),
+                    SizedBox(width: size.height*.04),
                     ///Deduct Key Dropdown
                     Expanded(
                       child: Container(
@@ -126,45 +165,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                         ),
                       ),
                     ),
-                    SizedBox(width: size.height*.04),
-                    ///Package Dropdown
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: size.height*.01),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blueGrey,width: 1),
-                            borderRadius: BorderRadius.all(Radius.circular(5))
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            isDense: true,
-                            isExpanded: true,
-                            value:_package,
-                            hint: Text('Select Package',style: TextStyle(
-                              color: Colors.grey,
-                              fontFamily: 'OpenSans',
-                              fontSize: size.height*.022,)),
-                            items:_packageList.map((category){
-                              return DropdownMenuItem(
-                                child: Text(category, style: TextStyle(
-                                    color: Colors.grey[900],
-                                    fontSize: size.height * .022,fontFamily: 'OpenSans'
-                                ),
-                                ),
-                                value: category,
-                              );
-                            }).toList(),
-                            onChanged: (newVal){
-                              setState(() {
-                                _package = newVal as String;
-                                auth.customerModel.package=_package;
-                              });
-                            },
-                            dropdownColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+
                   ],
                 ),
 
@@ -192,7 +193,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
   }
 
   Future<void> _checkValidity(CustomerProvider auth) async{
-      if(auth.customerModel.name!.isNotEmpty && auth.customerModel.phone!.isNotEmpty && auth.customerModel.billAmount!.isNotEmpty &&
+      if(auth.customerModel.name!.isNotEmpty && auth.customerModel.phone!.isNotEmpty && auth.customerModel.password!.isNotEmpty && auth.customerModel.billAmount!.isNotEmpty &&
           auth.customerModel.address!.isNotEmpty && auth.customerModel.deductKey!=null &&auth.customerModel.package!=null){
         setState(() {
           _isLoading=true;
@@ -226,6 +227,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
           hint=='Name'? auth.customerModel.name=val
               :hint=='Address'? auth.customerModel.address=val
               :hint=='Bill Amount'?auth.customerModel.billAmount=val
+              :hint=='Password'?auth.customerModel.password=val
               :auth.customerModel.phone=val;
         });
       },

@@ -6,20 +6,19 @@ import 'package:new_dish_admin_panlel/pages/about_us_page.dart';
 import 'package:new_dish_admin_panlel/pages/add_bill_man.dart';
 import 'package:new_dish_admin_panlel/pages/add_new_customer.dart';
 import 'package:new_dish_admin_panlel/pages/all_customer_list.dart';
+import 'package:new_dish_admin_panlel/pages/bank_book_page.dart';
 import 'package:new_dish_admin_panlel/pages/bill_man_list.dart';
 import 'package:new_dish_admin_panlel/pages/billing_info_page.dart';
+import 'package:new_dish_admin_panlel/pages/cash_book_page.dart';
 import 'package:new_dish_admin_panlel/pages/customer_problem_list.dart';
 import 'package:new_dish_admin_panlel/pages/dashboard_page.dart';
 import 'package:new_dish_admin_panlel/pages/due_bill_customer_list.dart';
-import 'package:new_dish_admin_panlel/pages/head_of_account_page.dart';
 import 'package:new_dish_admin_panlel/pages/paid_bill_customer_list.dart';
 import 'package:new_dish_admin_panlel/pages/pay_bill_page.dart';
 import 'package:new_dish_admin_panlel/pages/payment_request_list.dart';
 import 'package:new_dish_admin_panlel/pages/summary.dart';
 import 'package:new_dish_admin_panlel/pages/update_bill_man.dart';
 import 'package:new_dish_admin_panlel/pages/update_customer.dart';
-import 'package:new_dish_admin_panlel/pages/update_head.dart';
-
 class PublicProvider extends ChangeNotifier{
   String _category='';
   String _subCategory='';
@@ -79,14 +78,14 @@ class PublicProvider extends ChangeNotifier{
     else if(_subCategory=='Add Bill Man') return AddBillMan();
     else if(_subCategory=='All Bill Man') return BillManList();
     else if(_subCategory=='Update Bill Man') return UpdateBillMan();
-    else if(_subCategory=='Payment Request') return PaymentRequestList();
+    else if(_subCategory=='Bill Request') return PaymentRequestList();
     else if(_subCategory=='Billing Info') return BillingInfoPage();
+    //else if(_subCategory=='Head') return HeadOfAccount();
+    //else if(_subCategory=='Update Head') return UpdateHead();
     else if(_subCategory=='About Us') return AboutUsPage();
-    else if(_subCategory=='Head') return HeadOfAccount();
+    else if(_subCategory=='Cash Book') return CashBook();
+    else if(_subCategory=='Bank Book') return BankBookPage();
     else if(_subCategory=='Summary') return Summary();
-    else if(_subCategory=='Update Head') return UpdateHead();
-    // else if(_subCategory=='Cash Book') return CashBook();
-    // else if(_subCategory=='Bank Book') return BankBookPage();
     return DashBoardPage();
   }
 

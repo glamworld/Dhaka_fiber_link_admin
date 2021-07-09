@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:new_dish_admin_panlel/provider/bill_man_provider.dart';
@@ -8,7 +9,6 @@ import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:new_dish_admin_panlel/widgets/variables.dart';
 import 'package:provider/provider.dart';
 
-
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
@@ -18,22 +18,40 @@ class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   int count=0;
 
+  void _initialize()async{
+    final HeadProvider headProvider = Provider.of<HeadProvider>(context);
+    final snapShot = await FirebaseFirestore.instance
+        .collection('totalCount')
+        .doc('${DateTime.now().month}-${DateTime.now().year}') // varuId in your case
+        .get();
+    if(!snapShot.exists){
+      headProvider.addTotalCount();
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     final Size size = MediaQuery.of(context).size;
     final PublicProvider publicProvider = Provider.of<PublicProvider>(context);
     final CustomerProvider customerProvider = Provider.of<CustomerProvider>(context);
     final BillManProvider billManProvider = Provider.of<BillManProvider>(context);
-    final HeadProvider headProvider = Provider.of<HeadProvider>(context);
     final BillingProvider billingProvider = Provider.of<BillingProvider>(context);
+    final HeadProvider headProvider = Provider.of<HeadProvider>(context);
     if(count==0){
+      _initialize();
       customerProvider.getCustomers();
       customerProvider.getDueCustomers();
       customerProvider.getPaidCustomers();
       customerProvider.getUserProblem();
       billManProvider.getAllBillMan();
-      headProvider.getAllHeadDetails();
+      headProvider.getCashBookDetails();
+      headProvider.getBankBookDetails();
+      headProvider.getHeadOfAccountBank();
+      headProvider.getHeadOfAccountCash();
+      headProvider.getTotalCount();
+      headProvider.getCurrentCount();
       billingProvider.getBillingInfo();
+      billingProvider.getPendingBillingInfo();
       setState(() {
         count++;
       });
@@ -172,8 +190,9 @@ class SideBar extends StatelessWidget {
                 publicProvider,
                 context),
           ),
-          SidebarContentBuilder(title: 'Head'),
-          //SidebarContentBuilder(title: 'Summary'),
+          SidebarContentBuilder(title: 'Cash Book'),
+          SidebarContentBuilder(title: 'Bank Book'),
+          SidebarContentBuilder(title: 'Summary'),
           SidebarContentBuilder(title: 'About Us'),
         ],
       ),
@@ -249,8 +268,9 @@ class NavigationDrawer extends StatelessWidget {
                       publicProvider,
                       context),
                 ),
-                SidebarContentBuilder(title: 'Head'),
-                //SidebarContentBuilder(title: 'Summary'),
+                SidebarContentBuilder(title: 'Cash Book'),
+                SidebarContentBuilder(title: 'Bank Book'),
+                SidebarContentBuilder(title: 'Summary'),
                 SidebarContentBuilder(title: 'About Us'),
               ],
             ),
