@@ -46,7 +46,7 @@ class CustomerProvider extends ChangeNotifier{
         'lastEntryMonth': month,
         'monthYear': '$month/$year',
         'activity' : 'Active',
-        'deductKey': customerModel.deductKey,
+        'installationFee': customerModel.installationFee,
         'package': customerModel.package,
       }).then((value)async{
         await getCustomers().then((value) {
@@ -76,7 +76,7 @@ class CustomerProvider extends ChangeNotifier{
             password: element.doc['password'],
             billAmount: element.doc['billAmount'],
             activity: element.doc['activity'],
-            deductKey: element.doc['deductKey'],
+            installationFee: element.doc['installationFee'],
             package: element.doc['package'],
             lastEntryMonth: element.doc['lastEntryMonth'],
             lastEntryYear: element.doc['lastEntryYear'],
@@ -99,7 +99,6 @@ class CustomerProvider extends ChangeNotifier{
       'password':publicProvider.customerModel.password,
       'billAmount': publicProvider.customerModel.billAmount,
       'activity': publicProvider.customerModel.activity,
-      'deductKey': publicProvider.customerModel.deductKey,
       'package': publicProvider.customerModel.package,
 
     }).then((value)async{
@@ -136,7 +135,6 @@ class CustomerProvider extends ChangeNotifier{
               lastEntryYear: element.doc['lastEntryYear'],
               lastEntryMonth: element.doc['lastEntryMonth'],
               activity: element.doc['activity'],
-              deductKey: element.doc['deductKey'],
               package: element.doc['package'],
               monthYear: element.doc['monthYear']
             );
@@ -169,7 +167,6 @@ class CustomerProvider extends ChangeNotifier{
               lastEntryMonth: element.doc['lastEntryMonth'],
               lastEntryYear: element.doc['lastEntryYear'],
               activity: element.doc['activity'],
-              deductKey: element.doc['deductKey'],
               package: element.doc['package'],
               monthYear: element.doc['monthYear'],
             );

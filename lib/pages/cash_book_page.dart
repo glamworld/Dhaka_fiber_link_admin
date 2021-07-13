@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:new_dish_admin_panlel/model/head_model.dart';
 import 'package:new_dish_admin_panlel/model/head_of_account_model.dart';
@@ -340,6 +341,8 @@ class _CashBookState extends State<CashBook> with SingleTickerProviderStateMixin
                               _headOfAccount = newVal as String;
                               headProvider.headModel.headOfAccount=_headOfAccount;
                             });
+                            headProvider.getCurrentExpenses('${DateTime.now().month}-${DateTime.now().year}${headProvider.headModel.headOfAccount}');
+
                           },
                           dropdownColor: Colors.white,
                         ),
@@ -353,6 +356,8 @@ class _CashBookState extends State<CashBook> with SingleTickerProviderStateMixin
                   ],
                 ),
                 SizedBox(height: size.height*.04),
+                _textBuilder(size, 'Details',headProvider),
+                SizedBox(height: size.height*.04),
                 Row(
                   children: [
                     Expanded(child: _textBuilder(size, 'Debit',headProvider)),
@@ -360,9 +365,6 @@ class _CashBookState extends State<CashBook> with SingleTickerProviderStateMixin
                     Expanded(child: _textBuilder(size, 'Credit',headProvider)),
                   ],
                 ),
-                SizedBox(height: size.height*.04),
-                _textBuilder(size, 'Details',headProvider),
-
                 SizedBox(height: size.height*.08),
 
                 _isLoading?spinCircle():GradientButton(
@@ -390,14 +392,30 @@ class _CashBookState extends State<CashBook> with SingleTickerProviderStateMixin
       setState(() {
         _isLoading=true;
       });
-      Future.delayed(Duration(seconds: 2), ()async {
-        bool result = await auth.addCashBookDetails(auth.headModel);
-        if(result){
-          setState(() {
-            _isLoading=false;
-          });
-        }
-      });
+      final snapShot = await FirebaseFirestore.instance
+          .collection('Expenses')
+          .doc('${DateTime.now().month}-${DateTime.now().year}${auth.headModel.headOfAccount}') // varuId in your case
+          .get();
+      if(snapShot.exists){
+        auth.getCurrentExpenses('${DateTime.now().month}-${DateTime.now().year}${auth.headModel.headOfAccount}');
+        Future.delayed(Duration(seconds: 2), ()async {
+          bool result = await auth.addCashBookDetails2(auth.headModel,auth.currentExpenseList[0].totalCost);
+          if(result){
+            setState(() {
+              _isLoading=false;
+            });
+          }
+        });
+      }else{
+        Future.delayed(Duration(seconds: 2), ()async {
+          bool result = await auth.addCashBookDetails(auth.headModel);
+          if(result){
+            setState(() {
+              _isLoading=false;
+            });
+          }
+        });
+      }
 
     }else showToast('Complete all the required fields');
   }

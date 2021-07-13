@@ -4,6 +4,7 @@ class BillingInfoModel{
   String? userPhone;
   String? userID;
   String? payBy;
+  String? deductKey;
   String? billingMonth;
   String? billingYear;
   String? billingNumber;
@@ -19,6 +20,7 @@ class BillingInfoModel{
     this.userID,
     this.userPhone,
     this.payBy,
+    this.deductKey,
     this.billingMonth,
     this.billingYear,
     this.billingNumber,

@@ -4,6 +4,7 @@ class TotalCountModel{
   String? credit;
   String? month;
   String? year;
+  String? currentBalance;
 
-  TotalCountModel({this.id, this.debit, this.credit,this.month,this.year});
+  TotalCountModel({this.id, this.debit, this.credit,this.month,this.year,this.currentBalance});
 }

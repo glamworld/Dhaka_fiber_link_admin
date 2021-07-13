@@ -14,7 +14,6 @@ class UpdateCustomer extends StatefulWidget {
 class _UpdateCustomerState extends State<UpdateCustomer> {
   bool _isLoading = false;
   int _counter = 0;
-  String? _deductKey;
   String? _package;
   String? _activity;
   List<String> _deductList = ['Vat', 'AIT', 'Others'];
@@ -42,7 +41,6 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
     _phone = TextEditingController(text: publicProvider.customerModel.phone);
     _password =
         TextEditingController(text: publicProvider.customerModel.password);
-    _deductKey = publicProvider.customerModel.deductKey;
     _package = publicProvider.customerModel.package;
     _activity = publicProvider.customerModel.activity;
   }
@@ -203,51 +201,6 @@ class _UpdateCustomerState extends State<UpdateCustomer> {
                         child:
                             _textBuilder(size, 'Bill Amount', publicProvider)),
                     SizedBox(width: size.height * .04),
-
-                    ///Deduct Key Dropdown
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10, vertical: size.height * .01),
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.blueGrey, width: 1),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            isDense: true,
-                            isExpanded: true,
-                            value: _deductKey,
-                            hint: Text('Select Deduct Key',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: 'OpenSans',
-                                  fontSize: size.height * .022,
-                                )),
-                            items: _deductList.map((category) {
-                              return DropdownMenuItem(
-                                child: Text(
-                                  category,
-                                  style: TextStyle(
-                                      color: Colors.grey[900],
-                                      fontSize: size.height * .022,
-                                      fontFamily: 'OpenSans'),
-                                ),
-                                value: category,
-                              );
-                            }).toList(),
-                            onChanged: (newVal) {
-                              setState(() {
-                                _deductKey = newVal as String;
-                                publicProvider.customerModel.deductKey =
-                                    _deductKey;
-                              });
-                            },
-                            dropdownColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
 

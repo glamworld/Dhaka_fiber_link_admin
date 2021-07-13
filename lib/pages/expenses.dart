@@ -1,23 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:new_dish_admin_panlel/model/total_count_model.dart';
+import 'package:new_dish_admin_panlel/model/expense_model.dart';
 import 'package:new_dish_admin_panlel/provider/head_provider.dart';
 import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:new_dish_admin_panlel/widgets/form_decoration.dart';
-import 'package:new_dish_admin_panlel/widgets/total_count_table_body.dart';
+import 'package:new_dish_admin_panlel/widgets/total_expense_table_body.dart';
 import 'package:provider/provider.dart';
 
-class Summary extends StatefulWidget {
+class Expenses extends StatefulWidget {
   @override
-  _SummaryState createState() => _SummaryState();
+  _ExpensesState createState() => _ExpensesState();
 }
 
-class _SummaryState extends State<Summary> {
+class _ExpensesState extends State<Expenses> {
   bool _isLoading=false;
   String? billMonth;
   DateTime? _searchDate;
-  List<TotalCountModel> filteredCounts = [];
-  List<TotalCountModel> countList = [];
+  List<ExpenseModel> filteredExpenses = [];
+  List<ExpenseModel> expenseList = [];
   int _counter = 0;
   String? searchString;
   void _initializeDate(){
@@ -43,8 +43,8 @@ class _SummaryState extends State<Summary> {
     final HeadProvider headProvider = Provider.of<HeadProvider>(context);
     if (_counter == 0) {
       setState(() {
-        countList=headProvider.totalCountList;
-        filteredCounts=countList;
+        expenseList=headProvider.expenseList;
+        filteredExpenses=expenseList;
         _counter++;
       });
       _initializeDate();
@@ -102,7 +102,7 @@ class _SummaryState extends State<Summary> {
                         child: OutlinedButton(
                           onPressed: (){
                             setState(() {
-                              filteredCounts = countList
+                              filteredExpenses = expenseList
                                   .where((u) => ('${u.id}'.toLowerCase()
                                   .contains('${_searchDate!.month}-${_searchDate!.year}'.toLowerCase())))
                                   .toList();
@@ -131,8 +131,8 @@ class _SummaryState extends State<Summary> {
                         child: OutlinedButton(
                           onPressed: (){
                             setState(() {
-                              countList=headProvider.totalCountList;
-                              filteredCounts=countList;
+                              expenseList=headProvider.expenseList;
+                              filteredExpenses=expenseList;
                             });
                           },
                           child: Padding(
@@ -180,10 +180,8 @@ class _SummaryState extends State<Summary> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _tableHeaderBuilder(size, 'Month'),
-                    _tableHeaderBuilder(size, 'Total Credit'),
-                    _tableHeaderBuilder(size, 'Total Debit'),
-                    _tableHeaderBuilder(size, 'Profit'),
-                    _tableHeaderBuilder(size, 'Balance'),
+                    _tableHeaderBuilder(size, 'Head Of Account'),
+                    _tableHeaderBuilder(size, 'Total Cost'),
                   ],
                 ),
                 Divider(height: 5.0,color: Colors.grey.shade900)
@@ -198,16 +196,15 @@ class _SummaryState extends State<Summary> {
             child: Center(child: spinCircle()),
           ): Expanded(
             child: ListView.builder(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemCount: filteredCounts.length,
-              itemBuilder: (context,index)=>TotalCountTableBody(
-                month: filteredCounts[index].month,
-                year: filteredCounts[index].year,
-                debit: filteredCounts[index].debit,
-                credit: filteredCounts[index].credit,
-                balance: filteredCounts[index].currentBalance,
-              )
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: filteredExpenses.length,
+                itemBuilder: (context,index)=>TotalExpenseTableBody(
+                  month: filteredExpenses[index].month,
+                  year: filteredExpenses[index].year,
+                  totalCost: filteredExpenses[index].totalCost,
+                  headOfAccount: filteredExpenses[index].headOfAccount,
+                )
             ),
           )
         ],

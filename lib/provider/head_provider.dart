@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:new_dish_admin_panlel/model/about_model.dart';
+import 'package:new_dish_admin_panlel/model/expense_model.dart';
 import 'package:new_dish_admin_panlel/model/head_model.dart';
 import 'package:new_dish_admin_panlel/model/head_of_account_model.dart';
 import 'package:new_dish_admin_panlel/model/total_count_model.dart';
@@ -18,6 +19,8 @@ class HeadProvider extends ChangeNotifier{
   List<HeadOfAccountModel> _headOfAccountCashList=[];
   List<TotalCountModel> _totalCountList=[];
   List<TotalCountModel> _currentCountList=[];
+  List<ExpenseModel> _expenseList=[];
+  List<ExpenseModel> _currentExpenseList=[];
 
   HeadModel get headModel=> _headModel;
   AboutModel get aboutModel => _aboutModel;
@@ -29,6 +32,8 @@ class HeadProvider extends ChangeNotifier{
   get headOfAccountCashList=> _headOfAccountCashList;
   get totalCountList=> _totalCountList;
   get currentCountList=> _currentCountList;
+  get expenseList=> _expenseList;
+  get currentExpenseList=> _currentExpenseList;
 
   set headModel(HeadModel val){
     val= HeadModel();
@@ -54,18 +59,19 @@ class HeadProvider extends ChangeNotifier{
   Future<bool> addCashBookDetails(HeadModel headModel)async{
     int totalDebit= int.parse(currentCountList[0].debit!);
     int totalCredit= int.parse(currentCountList[0].credit!);
+    int currentBalance=int.parse(totalCountList[0].currentBalance!);
     final String monthYear = '${DateTime.now().month}-${DateTime.now().year}';
-    String year = DateFormat("yyyy").format(
-        DateTime.fromMillisecondsSinceEpoch(
+    String year = DateFormat("yyyy").format(DateTime.fromMillisecondsSinceEpoch(
             DateTime.now().millisecondsSinceEpoch));
-    String month = DateFormat("MM").format(
-        DateTime.fromMillisecondsSinceEpoch(
+    String month = DateFormat("MM").format(DateTime.fromMillisecondsSinceEpoch(
             DateTime.now().millisecondsSinceEpoch));
-
+    String id=monthYear+'${headModel.headOfAccount}';
     int deb=int.parse(headModel.debit!);
     int cred=int.parse(headModel.credit!);
     num debit=totalDebit+deb;
     num credit=totalCredit+cred;
+    num pBalance=currentBalance+cred;
+    num newBalance=pBalance-deb;
     try{
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
       await FirebaseFirestore.instance.collection('CashBookDetails').doc(timeStamp.toString()).set({
@@ -82,16 +88,259 @@ class HeadProvider extends ChangeNotifier{
         'id':monthYear,
         'debit': '$debit',
         'credit': '$credit',
-        }).then((value){
-          getCashBookDetails().then((value) {
-            getCurrentCount();
-            showToast('Details Saved');
+        'currentBalance':'$newBalance'
+        }).then((value)async{
+          await FirebaseFirestore.instance.collection('Expenses').doc(id).set({
+            'id':id,
+            'totalCost': '$deb',
+            'headOfAccount': headModel.headOfAccount,
+            'month':'${DateTime.now().month}',
+            'year':'${DateTime.now().year}',
+          }).then((value){
+            getCashBookDetails().then((value) {
+              getCurrentCount();
+              getTotalCount();
+              getExpenses();
+              showToast('Details Saved');
+            });
           });
+
         });
 
       }, onError: (error) {
         showToast(error.toString());
       });
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+  Future<bool> addBankBookDetails(HeadModel headModel)async{
+    int totalDebit= int.parse(currentCountList[0].debit!);
+    int totalCredit= int.parse(currentCountList[0].credit!);
+    int currentBalance=int.parse(totalCountList[0].currentBalance!);
+    int deb=int.parse(headModel.debit!);
+    int cred=int.parse(headModel.credit!);
+    num debit=totalDebit+deb;
+    num credit=totalCredit+cred;
+    num pBalance=currentBalance+cred;
+    num newBalance=pBalance-deb;
+    final String monthYear = '${DateTime.now().month}-${DateTime.now().year}';
+    String id=monthYear+'${headModel.headOfAccount}';
+    String year = DateFormat("yyyy").format(
+        DateTime.fromMillisecondsSinceEpoch(
+            DateTime.now().millisecondsSinceEpoch));
+    String month = DateFormat("MM").format(
+        DateTime.fromMillisecondsSinceEpoch(
+            DateTime.now().millisecondsSinceEpoch));
+    try{
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      await FirebaseFirestore.instance.collection('BankBookDetails').doc(timeStamp.toString()).set({
+        'id':timeStamp.toString(),
+        'headOfAccount':headModel.headOfAccount,
+        'name':headModel.name,
+        'details':headModel.details,
+        'debit':headModel.debit,
+        'credit': headModel.credit,
+        'month': month,
+        'year': year,
+      }).then((value)async{
+        await FirebaseFirestore.instance.collection('totalCount').doc(monthYear).update({
+          'id':monthYear,
+          'debit': '$debit',
+          'credit': '$credit',
+          'currentBalance':'$newBalance'
+        }).then((value)async{
+          await FirebaseFirestore.instance.collection('Expenses').doc(id).set({
+            'id':id,
+            'totalCost': '$deb',
+            'headOfAccount': headModel.headOfAccount,
+            'month':'${DateTime.now().month}',
+            'year':'${DateTime.now().year}',
+          }).then((value){
+            getBankBookDetails().then((value) {
+              getCurrentCount();
+              getTotalCount();
+              getExpenses();
+              showToast('Details Saved');
+            });
+          });
+
+        });
+
+      }, onError: (error) {
+        showToast(error.toString());
+      });
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+
+  Future<bool> addCashBookDetails2(HeadModel headModel,String currentTotalCost)async{
+    int totalDebit= int.parse(currentCountList[0].debit!);
+    int totalCredit= int.parse(currentCountList[0].credit!);
+    int currentBalance=int.parse(totalCountList[0].currentBalance!);
+    int totalCost=int.parse(currentTotalCost);
+    final String monthYear = '${DateTime.now().month}-${DateTime.now().year}';
+    String year = DateFormat("yyyy").format(DateTime.fromMillisecondsSinceEpoch(
+        DateTime.now().millisecondsSinceEpoch));
+    String month = DateFormat("MM").format(DateTime.fromMillisecondsSinceEpoch(
+        DateTime.now().millisecondsSinceEpoch));
+    String id=monthYear+'${headModel.headOfAccount}';
+    int deb=int.parse(headModel.debit!);
+    int cred=int.parse(headModel.credit!);
+    num debit=totalDebit+deb;
+    num credit=totalCredit+cred;
+    num pBalance=currentBalance+cred;
+    num newBalance=pBalance-deb;
+    num currentCost=totalCost+deb;
+    try{
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      await FirebaseFirestore.instance.collection('CashBookDetails').doc(timeStamp.toString()).set({
+        'id':timeStamp.toString(),
+        'headOfAccount':headModel.headOfAccount,
+        'name':headModel.name,
+        'details':headModel.details,
+        'debit':headModel.debit,
+        'credit': headModel.credit,
+        'month': month,
+        'year': year,
+      }).then((value)async{
+        await FirebaseFirestore.instance.collection('totalCount').doc(monthYear).update({
+          'id':monthYear,
+          'debit': '$debit',
+          'credit': '$credit',
+          'currentBalance':'$newBalance'
+        }).then((value)async{
+          await FirebaseFirestore.instance.collection('Expenses').doc(id).update({
+            'id':id,
+            'totalCost': '$currentCost',
+            'headOfAccount': headModel.headOfAccount,
+            'month':'${DateTime.now().month}',
+            'year':'${DateTime.now().year}',
+          }).then((value){
+            getCashBookDetails().then((value) {
+              getCurrentExpenses(id);
+              getExpenses();
+              getCurrentCount();
+              getTotalCount();
+              showToast('Details Saved');
+            });
+          });
+
+        });
+
+      }, onError: (error) {
+        showToast(error.toString());
+      });
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+  Future<bool> addBankBookDetails2(HeadModel headModel,String currentTotalCost)async{
+    int totalDebit= int.parse(currentCountList[0].debit!);
+    int totalCredit= int.parse(currentCountList[0].credit!);
+    int currentBalance=int.parse(totalCountList[0].currentBalance!);
+    int totalCost=int.parse(currentTotalCost);
+    int deb=int.parse(headModel.debit!);
+    int cred=int.parse(headModel.credit!);
+    num debit=totalDebit+deb;
+    num credit=totalCredit+cred;
+    num pBalance=currentBalance+cred;
+    num newBalance=pBalance-deb;
+    num currentCost=totalCost+deb;
+    final String monthYear = '${DateTime.now().month}-${DateTime.now().year}';
+    String id=monthYear+'${headModel.headOfAccount}';
+    String year = DateFormat("yyyy").format(
+        DateTime.fromMillisecondsSinceEpoch(
+            DateTime.now().millisecondsSinceEpoch));
+    String month = DateFormat("MM").format(
+        DateTime.fromMillisecondsSinceEpoch(
+            DateTime.now().millisecondsSinceEpoch));
+    try{
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      await FirebaseFirestore.instance.collection('BankBookDetails').doc(timeStamp.toString()).set({
+        'id':timeStamp.toString(),
+        'headOfAccount':headModel.headOfAccount,
+        'name':headModel.name,
+        'details':headModel.details,
+        'debit':headModel.debit,
+        'credit': headModel.credit,
+        'month': month,
+        'year': year,
+      }).then((value)async{
+        await FirebaseFirestore.instance.collection('totalCount').doc(monthYear).update({
+          'id':monthYear,
+          'debit': '$debit',
+          'credit': '$credit',
+          'currentBalance':'$newBalance'
+        }).then((value)async{
+          await FirebaseFirestore.instance.collection('Expenses').doc(id).update({
+            'id':id,
+            'totalCost': '$currentCost',
+            'headOfAccount': headModel.headOfAccount,
+            'month':'${DateTime.now().month}',
+            'year':'${DateTime.now().year}',
+          }).then((value){
+            getBankBookDetails().then((value) {
+              getCurrentCount();
+              getTotalCount();
+              getCurrentExpenses(id);
+              getExpenses();
+              showToast('Details Saved');
+            });
+          });
+
+        });
+
+      }, onError: (error) {
+        showToast(error.toString());
+      });
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+
+  Future<bool> getExpenses()async{
+    try{
+      await FirebaseFirestore.instance.collection('Expenses').get().then((snapshot){
+        _expenseList.clear();
+        snapshot.docChanges.forEach((element) {
+          ExpenseModel expenseModel = ExpenseModel(
+              id: element.doc['id'],
+              headOfAccount: element.doc['headOfAccount'],
+              month: element.doc['month'],
+              year: element.doc['year'],
+              totalCost: element.doc['totalCost']
+          );
+          _expenseList.add(expenseModel);
+        });
+      });
+      notifyListeners();
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+  Future<bool> getCurrentExpenses(String id)async{
+    try{
+      await FirebaseFirestore.instance.collection('Expenses').where('id',isEqualTo: id).get().then((snapshot){
+        _currentExpenseList.clear();
+        snapshot.docChanges.forEach((element) {
+          ExpenseModel expenseModel = ExpenseModel(
+              id: element.doc['id'],
+              headOfAccount: element.doc['headOfAccount'],
+              month: element.doc['month'],
+              year: element.doc['year'],
+              totalCost: element.doc['totalCost']
+          );
+          _currentExpenseList.add(expenseModel);
+        });
+      });
+      notifyListeners();
       return Future.value(true);
     }catch(error){
       return Future.value(false);
@@ -117,51 +366,6 @@ class HeadProvider extends ChangeNotifier{
         });
       });
       notifyListeners();
-      return Future.value(true);
-    }catch(error){
-      return Future.value(false);
-    }
-  }
-  Future<bool> addBankBookDetails(HeadModel headModel)async{
-    int totalDebit= int.parse(currentCountList[0].debit!);
-    int totalCredit= int.parse(currentCountList[0].credit!);
-    int deb=int.parse(headModel.debit!);
-    int cred=int.parse(headModel.credit!);
-    num debit=totalDebit+deb;
-    num credit=totalCredit+cred;
-    final String monthYear = '${DateTime.now().month}-${DateTime.now().year}';
-    String year = DateFormat("yyyy").format(
-        DateTime.fromMillisecondsSinceEpoch(
-            DateTime.now().millisecondsSinceEpoch));
-    String month = DateFormat("MM").format(
-        DateTime.fromMillisecondsSinceEpoch(
-            DateTime.now().millisecondsSinceEpoch));
-    try{
-      int timeStamp = DateTime.now().millisecondsSinceEpoch;
-      await FirebaseFirestore.instance.collection('BankBookDetails').doc(timeStamp.toString()).set({
-        'id':timeStamp.toString(),
-        'headOfAccount':headModel.headOfAccount,
-        'name':headModel.name,
-        'details':headModel.details,
-        'debit':headModel.debit,
-        'credit': headModel.credit,
-        'month': month,
-        'year': year,
-      }).then((value)async{
-        await FirebaseFirestore.instance.collection('totalCount').doc(monthYear).update({
-          'id':monthYear,
-          'debit': '$debit',
-          'credit': '$credit',
-        }).then((value){
-          getCashBookDetails().then((value) {
-            getCurrentCount();
-            showToast('Details Saved');
-          });
-        });
-
-      }, onError: (error) {
-        showToast(error.toString());
-      });
       return Future.value(true);
     }catch(error){
       return Future.value(false);
@@ -293,7 +497,8 @@ class HeadProvider extends ChangeNotifier{
         'debit': '0',
         'credit': '0',
         'month':'${DateTime.now().month}',
-        'year':'${DateTime.now().year}'
+        'year':'${DateTime.now().year}',
+        'currentBalance': '0'
       }).then((value){
         getTotalCount();
       }, onError: (error) {
@@ -307,7 +512,7 @@ class HeadProvider extends ChangeNotifier{
 
   Future<bool> getTotalCount()async{
     try{
-      await FirebaseFirestore.instance.collection('totalCount').get().then((snapshot){
+      await FirebaseFirestore.instance.collection('totalCount').orderBy('id', descending: true).get().then((snapshot){
         _totalCountList.clear();
         snapshot.docChanges.forEach((element) {
           TotalCountModel totalCountModel = TotalCountModel(
@@ -315,7 +520,8 @@ class HeadProvider extends ChangeNotifier{
             debit: element.doc['debit'],
             credit: element.doc['credit'],
             month: element.doc['month'],
-            year: element.doc['year']
+            year: element.doc['year'],
+            currentBalance: element.doc['currentBalance']
           );
           _totalCountList.add(totalCountModel);
         });
@@ -337,7 +543,8 @@ class HeadProvider extends ChangeNotifier{
             debit: element.doc['debit'],
             credit: element.doc['credit'],
             month: element.doc['month'],
-            year: element.doc['year']
+            year: element.doc['year'],
+            currentBalance: element.doc['currentBalance']
           );
           _currentCountList.add(totalCountModel);
         });

@@ -14,6 +14,7 @@ class Variables{
       Entry('Bills', <Entry>[
         Entry('Billing Info'),
         Entry('Bill Request'),
+        Entry('Total Bills'),
       ]),
       Entry('Bill Man', <Entry>[
         Entry('Add Bill Man'),

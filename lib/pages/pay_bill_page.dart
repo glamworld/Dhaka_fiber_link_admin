@@ -18,6 +18,7 @@ class _PayBillState extends State<PayBill> {
   String payDate = DateFormat("yyyy-MM-dd").format(
       DateTime.fromMillisecondsSinceEpoch(
           DateTime.now().millisecondsSinceEpoch));
+  String? _deductKey;
   bool _isLoading = false;
   DateTime? _date;
   DateTime? currentMonth;
@@ -25,6 +26,7 @@ class _PayBillState extends State<PayBill> {
   var months;
   String? _payBy;
   TextEditingController _payDate = TextEditingController(text: '');
+  List<String> _deductList = ['Vat','AIT','Others'];
   List<String> _payList = ['Bank','Cash'];
 
   void _initializeData(BillingProvider auth,PublicProvider publicProvider) {
@@ -140,13 +142,6 @@ class _PayBillState extends State<PayBill> {
                             color: Colors.grey.shade900,
                           )),
                       Text(' | '),
-                      Text(publicProvider.customerModel.deductKey ?? '',
-                          style: TextStyle(
-                            fontSize: size.height * .021,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade900,
-                          )),
-                      Text(' | '),
                       Text(publicProvider.customerModel.package ?? '',
                           style: TextStyle(
                             fontSize: size.height * .021,
@@ -202,6 +197,69 @@ class _PayBillState extends State<PayBill> {
                   ],
                 ),
                 SizedBox(height: size.height * .03),
+
+                ///Deduct Key Dropdown
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        width: size.width * 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                height: 50,
+                                width: size.width * .07,
+                                child: Center(
+                                    child: Text(
+                                      'Deduct Key: ',
+                                      style: TextStyle(fontSize: size.height * .02),
+                                    ))),
+                            Container(
+                              height: 40,
+                              width: size.width * .15,
+                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: size.height*.01),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.blueGrey,width: 1),
+                                  borderRadius: BorderRadius.all(Radius.circular(5))
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  isDense: true,
+                                  isExpanded: true,
+                                  value:_deductKey,
+                                  hint: Text('Select Deduct Key',style: TextStyle(
+                                    color: Colors.grey,
+                                    fontFamily: 'OpenSans',
+                                    fontSize: size.height*.022,)),
+                                  items:_deductList.map((category){
+                                    return DropdownMenuItem(
+                                      child: Text(category, style: TextStyle(
+                                          color: Colors.grey[900],
+                                          fontSize: size.height * .022,fontFamily: 'OpenSans'
+                                      ),
+                                      ),
+                                      value: category,
+                                    );
+                                  }).toList(),
+                                  onChanged: (newVal){
+                                    setState(() {
+                                      _deductKey = newVal as String;
+                                      auth.billingInfoModel.deductKey=_deductKey;
+                                    });
+                                  },
+
+                                  dropdownColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: size.height * .04),
                 Row(
                   children: [
                     Expanded(

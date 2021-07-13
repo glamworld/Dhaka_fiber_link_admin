@@ -20,12 +20,20 @@ class _MainPageState extends State<MainPage> {
 
   void _initialize()async{
     final HeadProvider headProvider = Provider.of<HeadProvider>(context);
+    final BillingProvider billingProvider = Provider.of<BillingProvider>(context);
+    final snapShot1 = await FirebaseFirestore.instance
+        .collection('totalBill')
+        .doc('${DateTime.now().month}-${DateTime.now().year}') // varuId in your case
+        .get();
     final snapShot = await FirebaseFirestore.instance
         .collection('totalCount')
         .doc('${DateTime.now().month}-${DateTime.now().year}') // varuId in your case
         .get();
     if(!snapShot.exists){
       headProvider.addTotalCount();
+    }
+    if(!snapShot1.exists){
+      billingProvider.addTotalBill();
     }
   }
 
@@ -49,6 +57,9 @@ class _MainPageState extends State<MainPage> {
       headProvider.getHeadOfAccountBank();
       headProvider.getHeadOfAccountCash();
       headProvider.getTotalCount();
+      headProvider.getExpenses();
+      billingProvider.getTotalBill();
+      billingProvider.getCurrentBill();
       headProvider.getCurrentCount();
       billingProvider.getBillingInfo();
       billingProvider.getPendingBillingInfo();
@@ -192,6 +203,7 @@ class SideBar extends StatelessWidget {
           ),
           SidebarContentBuilder(title: 'Cash Book'),
           SidebarContentBuilder(title: 'Bank Book'),
+          SidebarContentBuilder(title: 'Expenses'),
           SidebarContentBuilder(title: 'Summary'),
           SidebarContentBuilder(title: 'About Us'),
         ],
@@ -270,6 +282,7 @@ class NavigationDrawer extends StatelessWidget {
                 ),
                 SidebarContentBuilder(title: 'Cash Book'),
                 SidebarContentBuilder(title: 'Bank Book'),
+                SidebarContentBuilder(title: 'Expenses'),
                 SidebarContentBuilder(title: 'Summary'),
                 SidebarContentBuilder(title: 'About Us'),
               ],

@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 
 
 class PaymentRequestTableBody extends StatefulWidget {
-  String? id,userId,name,phone,paidBy,billingNumber,transactionId,billingMonth,billingYear,payDate,billAmount;
-PaymentRequestTableBody({this.id,this.userId,this.name,this.phone,this.paidBy,this.billingNumber,this.transactionId,
+  String? id,userId,name,phone,paidBy,deductKey,billingNumber,transactionId,billingMonth,billingYear,payDate,billAmount;
+PaymentRequestTableBody({this.id,this.userId,this.name,this.phone,this.paidBy,this.deductKey,this.billingNumber,this.transactionId,
   this.billingMonth,this.billingYear,this.payDate,this.billAmount});
 
   @override
@@ -56,6 +56,7 @@ class _PaymentRequestTableBodyState extends State<PaymentRequestTableBody> {
               _tableBodyBuilder(size, widget.name!, publicProvider,billingProvider,customerProvider,headProvider),
               _tableBodyBuilder(size, widget.phone!, publicProvider,billingProvider,customerProvider,headProvider),
               _tableBodyBuilder(size, widget.paidBy!, publicProvider,billingProvider,customerProvider,headProvider),
+              _tableBodyBuilder(size, widget.deductKey!, publicProvider,billingProvider,customerProvider,headProvider),
               _tableBodyBuilder(size, widget.billingNumber!,publicProvider,billingProvider,customerProvider,headProvider),
               _tableBodyBuilder(size, widget.transactionId!,publicProvider,billingProvider,customerProvider,headProvider),
               _tableBodyBuilder(size, '$billMonth-${widget.billingYear}',publicProvider,billingProvider,customerProvider,headProvider),
@@ -112,6 +113,7 @@ class _PaymentRequestTableBodyState extends State<PaymentRequestTableBody> {
       setState(() {
         auth.billingInfoModel.name=widget.name;
         auth.billingInfoModel.amount=widget.billAmount;
+        auth.billingInfoModel.deductKey=widget.deductKey;
         auth.billingInfoModel.billingMonth = '${widget.billingMonth}';
         auth.billingInfoModel.billingYear = '${widget.billingYear}';
         publicProvider.customerModel.lastEntryMonth='${widget.billingMonth}';

@@ -3,9 +3,9 @@ import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:provider/provider.dart';
 
 class BillingInfoTableBody extends StatefulWidget {
-  String? userId,name,phone,billingNumber,transactionId,billingMonth,billingYear,payBy,payDate,amount;
+  String? userId,name,phone,billingNumber,transactionId,billingMonth,billingYear,payBy,deductKey,payDate,amount;
   BillingInfoTableBody({this.userId,this.name,this.phone,this.billingNumber,this.transactionId,
-  this.billingMonth,this.billingYear,this.payBy,this.payDate,this.amount});
+  this.billingMonth,this.billingYear,this.payBy,this.deductKey,this.payDate,this.amount});
   @override
   _BillingInfoTableBodyState createState() => _BillingInfoTableBodyState();
 }
@@ -45,6 +45,7 @@ class _BillingInfoTableBodyState extends State<BillingInfoTableBody> {
               _tableBodyBuilder(size, widget.transactionId!,publicProvider),
               _tableBodyBuilder(size, '$billMonth-${widget.billingYear!}',publicProvider),
               _tableBodyBuilder(size, widget.payBy!,publicProvider),
+              _tableBodyBuilder(size, widget.deductKey!,publicProvider),
               _tableBodyBuilder(size, widget.payDate!,publicProvider),
               _tableBodyBuilder(size, widget.amount!,publicProvider),
             ],

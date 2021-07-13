@@ -13,10 +13,12 @@ import 'package:new_dish_admin_panlel/pages/cash_book_page.dart';
 import 'package:new_dish_admin_panlel/pages/customer_problem_list.dart';
 import 'package:new_dish_admin_panlel/pages/dashboard_page.dart';
 import 'package:new_dish_admin_panlel/pages/due_bill_customer_list.dart';
+import 'package:new_dish_admin_panlel/pages/expenses.dart';
 import 'package:new_dish_admin_panlel/pages/paid_bill_customer_list.dart';
 import 'package:new_dish_admin_panlel/pages/pay_bill_page.dart';
 import 'package:new_dish_admin_panlel/pages/payment_request_list.dart';
 import 'package:new_dish_admin_panlel/pages/summary.dart';
+import 'package:new_dish_admin_panlel/pages/total_bills.dart';
 import 'package:new_dish_admin_panlel/pages/update_bill_man.dart';
 import 'package:new_dish_admin_panlel/pages/update_customer.dart';
 class PublicProvider extends ChangeNotifier{
@@ -80,8 +82,8 @@ class PublicProvider extends ChangeNotifier{
     else if(_subCategory=='Update Bill Man') return UpdateBillMan();
     else if(_subCategory=='Bill Request') return PaymentRequestList();
     else if(_subCategory=='Billing Info') return BillingInfoPage();
-    //else if(_subCategory=='Head') return HeadOfAccount();
-    //else if(_subCategory=='Update Head') return UpdateHead();
+    else if(_subCategory=='Total Bills') return TotalBills();
+    else if(_subCategory=='Expenses') return Expenses();
     else if(_subCategory=='About Us') return AboutUsPage();
     else if(_subCategory=='Cash Book') return CashBook();
     else if(_subCategory=='Bank Book') return BankBookPage();

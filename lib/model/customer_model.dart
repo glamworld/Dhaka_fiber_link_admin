@@ -11,7 +11,7 @@ class CustomerModel{
   String? lastEntryMonth;
   String? monthYear;
   String? activity;
-  String? deductKey;
+  String? installationFee;
   String? package;
 
   CustomerModel(
@@ -27,6 +27,6 @@ class CustomerModel{
       this.lastEntryMonth,
       this.monthYear,
       this.activity,
-      this.deductKey,
+      this.installationFee,
       this.package});
 }

@@ -14,9 +14,8 @@ class AddNewCustomer extends StatefulWidget {
 
 class _AddNewCustomerState extends State<AddNewCustomer> {
   bool _isLoading=false;
-  String? _deductKey;
+
   String? _package;
-  List<String> _deductList = ['Vat','AIT','Others'];
   List<String> _packageList = ['Package-1','Package-2','Package-3', 'Package-4'];
   void _initializeData(CustomerProvider auth) {
     auth.customerModel.name = '';
@@ -126,45 +125,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
                   children: [
                     Expanded(child: _textBuilder(size, 'Bill Amount',auth)),
                     SizedBox(width: size.height*.04),
-                    ///Deduct Key Dropdown
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10,vertical: size.height*.01),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blueGrey,width: 1),
-                            borderRadius: BorderRadius.all(Radius.circular(5))
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            isDense: true,
-                            isExpanded: true,
-                            value:_deductKey,
-                            hint: Text('Select Deduct Key',style: TextStyle(
-                              color: Colors.grey,
-                              fontFamily: 'OpenSans',
-                              fontSize: size.height*.022,)),
-                            items:_deductList.map((category){
-                              return DropdownMenuItem(
-                                child: Text(category, style: TextStyle(
-                                    color: Colors.grey[900],
-                                    fontSize: size.height * .022,fontFamily: 'OpenSans'
-                                ),
-                                ),
-                                value: category,
-                              );
-                            }).toList(),
-                            onChanged: (newVal){
-                              setState(() {
-                                _deductKey = newVal as String;
-                                auth.customerModel.deductKey=_deductKey;
-                              });
-                            },
-
-                            dropdownColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                    Expanded(child: _textBuilder(size, 'Installation fee',auth)),
 
                   ],
                 ),
@@ -194,7 +155,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
 
   Future<void> _checkValidity(CustomerProvider auth) async{
       if(auth.customerModel.name!.isNotEmpty && auth.customerModel.phone!.isNotEmpty && auth.customerModel.password!.isNotEmpty && auth.customerModel.billAmount!.isNotEmpty &&
-          auth.customerModel.address!.isNotEmpty && auth.customerModel.deductKey!=null &&auth.customerModel.package!=null){
+          auth.customerModel.address!.isNotEmpty && auth.customerModel.installationFee!=null &&auth.customerModel.package!=null){
         setState(() {
           _isLoading=true;
         });
@@ -228,6 +189,7 @@ class _AddNewCustomerState extends State<AddNewCustomer> {
               :hint=='Address'? auth.customerModel.address=val
               :hint=='Bill Amount'?auth.customerModel.billAmount=val
               :hint=='Password'?auth.customerModel.password=val
+              :hint=='Installation fee'?auth.customerModel.installationFee=val
               :auth.customerModel.phone=val;
         });
       },

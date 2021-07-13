@@ -1,23 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:new_dish_admin_panlel/model/total_count_model.dart';
-import 'package:new_dish_admin_panlel/provider/head_provider.dart';
+import 'package:new_dish_admin_panlel/model/total_bill_model.dart';
+import 'package:new_dish_admin_panlel/provider/billing_provider.dart';
 import 'package:new_dish_admin_panlel/provider/public_provider.dart';
 import 'package:new_dish_admin_panlel/widgets/form_decoration.dart';
-import 'package:new_dish_admin_panlel/widgets/total_count_table_body.dart';
+import 'package:new_dish_admin_panlel/widgets/total_bill_table_body.dart';
 import 'package:provider/provider.dart';
 
-class Summary extends StatefulWidget {
+class TotalBills extends StatefulWidget {
   @override
-  _SummaryState createState() => _SummaryState();
+  _TotalBillsState createState() => _TotalBillsState();
 }
 
-class _SummaryState extends State<Summary> {
+class _TotalBillsState extends State<TotalBills> {
   bool _isLoading=false;
   String? billMonth;
   DateTime? _searchDate;
-  List<TotalCountModel> filteredCounts = [];
-  List<TotalCountModel> countList = [];
+  List<TotalBillModel> filteredBills = [];
+  List<TotalBillModel> billList = [];
   int _counter = 0;
   String? searchString;
   void _initializeDate(){
@@ -40,11 +40,11 @@ class _SummaryState extends State<Summary> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     final PublicProvider publicProvider = Provider.of<PublicProvider>(context);
-    final HeadProvider headProvider = Provider.of<HeadProvider>(context);
+    final BillingProvider billingProvider = Provider.of<BillingProvider>(context);
     if (_counter == 0) {
       setState(() {
-        countList=headProvider.totalCountList;
-        filteredCounts=countList;
+        billList=billingProvider.totalBillList;
+        filteredBills=billList;
         _counter++;
       });
       _initializeDate();
@@ -102,7 +102,7 @@ class _SummaryState extends State<Summary> {
                         child: OutlinedButton(
                           onPressed: (){
                             setState(() {
-                              filteredCounts = countList
+                              filteredBills = billList
                                   .where((u) => ('${u.id}'.toLowerCase()
                                   .contains('${_searchDate!.month}-${_searchDate!.year}'.toLowerCase())))
                                   .toList();
@@ -131,8 +131,8 @@ class _SummaryState extends State<Summary> {
                         child: OutlinedButton(
                           onPressed: (){
                             setState(() {
-                              countList=headProvider.totalCountList;
-                              filteredCounts=countList;
+                              billList=billingProvider.totalBillList;
+                              filteredBills=billList;
                             });
                           },
                           child: Padding(
@@ -180,10 +180,7 @@ class _SummaryState extends State<Summary> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _tableHeaderBuilder(size, 'Month'),
-                    _tableHeaderBuilder(size, 'Total Credit'),
-                    _tableHeaderBuilder(size, 'Total Debit'),
-                    _tableHeaderBuilder(size, 'Profit'),
-                    _tableHeaderBuilder(size, 'Balance'),
+                    _tableHeaderBuilder(size, 'Total BillAmount'),
                   ],
                 ),
                 Divider(height: 5.0,color: Colors.grey.shade900)
@@ -198,16 +195,14 @@ class _SummaryState extends State<Summary> {
             child: Center(child: spinCircle()),
           ): Expanded(
             child: ListView.builder(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemCount: filteredCounts.length,
-              itemBuilder: (context,index)=>TotalCountTableBody(
-                month: filteredCounts[index].month,
-                year: filteredCounts[index].year,
-                debit: filteredCounts[index].debit,
-                credit: filteredCounts[index].credit,
-                balance: filteredCounts[index].currentBalance,
-              )
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: filteredBills.length,
+                itemBuilder: (context,index)=>TotalBillTableBody(
+                  month: filteredBills[index].month,
+                  year: filteredBills[index].year,
+                  totalAmount: filteredBills[index].totalBillAmount,
+                )
             ),
           )
         ],

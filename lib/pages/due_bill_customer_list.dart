@@ -151,7 +151,6 @@ class _DueBillCustomerListState extends State<DueBillCustomerList> {
                     _tableHeaderBuilder(size, 'Name'),
                     _tableHeaderBuilder(size, 'Phone'),
                     _tableHeaderBuilder(size, 'Address'),
-                    _tableHeaderBuilder(size, 'Deduct Key'),
                     _tableHeaderBuilder(size, 'Package'),
                     _tableHeaderBuilder(size, 'Bill Amount'),
                     _tableHeaderBuilder(size, 'Due Amount'),
@@ -196,7 +195,6 @@ class _DueBillCustomerListState extends State<DueBillCustomerList> {
                           _tableBodyBuilder(size, filteredCustomers[index].name!, publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size, filteredCustomers[index].phone!, publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size,filteredCustomers[index].address!,publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
-                          _tableBodyBuilder(size, filteredCustomers[index].deductKey!,publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size, filteredCustomers[index].package!,publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size, filteredCustomers[index].billAmount!,publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
                           _tableBodyBuilder(size, filteredCustomers[index].dueAmount==null?months==0?filteredCustomers[index].billAmount!:dueAmount:filteredCustomers[index].dueAmount!,publicProvider,customerProvider,months,dueAmount,filteredCustomers[index]),
@@ -259,12 +257,12 @@ class _DueBillCustomerListState extends State<DueBillCustomerList> {
               publicProvider.customerModel.name=dta.name;
               publicProvider.customerModel.phone=dta.phone;
               publicProvider.customerModel.address=dta.address;
-              publicProvider.customerModel.deductKey=dta.deductKey;
               publicProvider.customerModel.package=dta.package;
               publicProvider.customerModel.dueAmount=dta.dueAmount==null?months==0?dta.billAmount:dueAmount:dta.dueAmount;
               publicProvider.customerModel.billAmount=dta.billAmount;
               publicProvider.customerModel.activity=dta.activity;
             });
+            print(dta.installationFee);
           },
         ),
       ),
