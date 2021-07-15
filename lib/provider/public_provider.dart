@@ -83,7 +83,7 @@ class PublicProvider extends ChangeNotifier{
     else if(_subCategory=='Bill Request') return PaymentRequestList();
     else if(_subCategory=='Billing Info') return BillingInfoPage();
     else if(_subCategory=='Total Bills') return TotalBills();
-    else if(_subCategory=='Expenses') return Expenses();
+    else if(_subCategory=='Head') return Expenses();
     else if(_subCategory=='About Us') return AboutUsPage();
     else if(_subCategory=='Cash Book') return CashBook();
     else if(_subCategory=='Bank Book') return BankBookPage();

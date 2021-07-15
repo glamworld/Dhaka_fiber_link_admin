@@ -17,6 +17,7 @@ class HeadProvider extends ChangeNotifier{
   List<HeadModel> _bankBookList=[];
   List<HeadOfAccountModel> _headOfAccountBankList=[];
   List<HeadOfAccountModel> _headOfAccountCashList=[];
+  List<HeadOfAccountModel> _headOfAccountBillList=[];
   List<TotalCountModel> _totalCountList=[];
   List<TotalCountModel> _currentCountList=[];
   List<ExpenseModel> _expenseList=[];
@@ -30,6 +31,7 @@ class HeadProvider extends ChangeNotifier{
   get bankBookList=> _bankBookList;
   get headOfAccountBankList=> _headOfAccountBankList;
   get headOfAccountCashList=> _headOfAccountCashList;
+  get headOfAccountBillList=> _headOfAccountBillList;
   get totalCountList=> _totalCountList;
   get currentCountList=> _currentCountList;
   get expenseList=> _expenseList;
@@ -92,7 +94,8 @@ class HeadProvider extends ChangeNotifier{
         }).then((value)async{
           await FirebaseFirestore.instance.collection('Expenses').doc(id).set({
             'id':id,
-            'totalCost': '$deb',
+            'debit': '$deb',
+            'credit':'$cred',
             'headOfAccount': headModel.headOfAccount,
             'month':'${DateTime.now().month}',
             'year':'${DateTime.now().year}',
@@ -153,7 +156,8 @@ class HeadProvider extends ChangeNotifier{
         }).then((value)async{
           await FirebaseFirestore.instance.collection('Expenses').doc(id).set({
             'id':id,
-            'totalCost': '$deb',
+            'debit': '$deb',
+            'credit':'$cred',
             'headOfAccount': headModel.headOfAccount,
             'month':'${DateTime.now().month}',
             'year':'${DateTime.now().year}',
@@ -215,7 +219,8 @@ class HeadProvider extends ChangeNotifier{
         }).then((value)async{
           await FirebaseFirestore.instance.collection('Expenses').doc(id).update({
             'id':id,
-            'totalCost': '$currentCost',
+            'debit': '$deb',
+            'credit':'$cred',
             'headOfAccount': headModel.headOfAccount,
             'month':'${DateTime.now().month}',
             'year':'${DateTime.now().year}',
@@ -279,7 +284,8 @@ class HeadProvider extends ChangeNotifier{
         }).then((value)async{
           await FirebaseFirestore.instance.collection('Expenses').doc(id).update({
             'id':id,
-            'totalCost': '$currentCost',
+            'debit': '$deb',
+            'credit':'$cred',
             'headOfAccount': headModel.headOfAccount,
             'month':'${DateTime.now().month}',
             'year':'${DateTime.now().year}',
@@ -314,7 +320,8 @@ class HeadProvider extends ChangeNotifier{
               headOfAccount: element.doc['headOfAccount'],
               month: element.doc['month'],
               year: element.doc['year'],
-              totalCost: element.doc['totalCost']
+              credit: element.doc['credit'],
+              debit: element.doc['debit']
           );
           _expenseList.add(expenseModel);
         });
@@ -335,10 +342,12 @@ class HeadProvider extends ChangeNotifier{
               headOfAccount: element.doc['headOfAccount'],
               month: element.doc['month'],
               year: element.doc['year'],
-              totalCost: element.doc['totalCost']
+              credit: element.doc['credit'],
+              debit: element.doc['debit']
           );
           _currentExpenseList.add(expenseModel);
         });
+        print(_currentExpenseList.length);
       });
       notifyListeners();
       return Future.value(true);
@@ -465,6 +474,45 @@ class HeadProvider extends ChangeNotifier{
             name: element.doc['name'],
           );
           _headOfAccountCashList.add(headModel);
+        });
+      });
+      notifyListeners();
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+
+  Future<bool> addHeadOfAccountBill(HeadOfAccountModel headOfAccountModel)async{
+    try{
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      await FirebaseFirestore.instance.collection('HeadOfAccount').doc(timeStamp.toString()).set({
+        'id':timeStamp.toString(),
+        'name':headOfAccountModel.name,
+        'type': 'Bill'
+      }).then((value){
+        getHeadOfAccountBill().then((value) {
+          showToast('Saved');
+        });
+      }, onError: (error) {
+        showToast(error.toString());
+      });
+      return Future.value(true);
+    }catch(error){
+      return Future.value(false);
+    }
+  }
+
+  Future<bool> getHeadOfAccountBill()async{
+    try{
+      await FirebaseFirestore.instance.collection('HeadOfAccount').where('type',isEqualTo: 'Bill').get().then((snapshot){
+        _headOfAccountBillList.clear();
+        snapshot.docChanges.forEach((element) {
+          HeadOfAccountModel headModel = HeadOfAccountModel(
+            id: element.doc['id'],
+            name: element.doc['name'],
+          );
+          _headOfAccountBillList.add(headModel);
         });
       });
       notifyListeners();

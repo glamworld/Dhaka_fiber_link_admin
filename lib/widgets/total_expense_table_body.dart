@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TotalExpenseTableBody extends StatefulWidget {
-  String? month,year,totalCost,headOfAccount;
+  String? month,year,debit,credit,headOfAccount;
 
   TotalExpenseTableBody(
-      {this.month, this.year, this.totalCost,this.headOfAccount});
+      {this.month, this.year, this.debit,this.credit,this.headOfAccount});
   @override
   _TotalExpenseTableBodyState createState() => _TotalExpenseTableBodyState();
 }
@@ -15,6 +15,9 @@ class _TotalExpenseTableBodyState extends State<TotalExpenseTableBody> {
   Widget build(BuildContext context) {
     String? billMonth;
     final Size size = MediaQuery.of(context).size;
+    int debit=int.parse(widget.debit!);
+    int credit=int.parse(widget.credit!);
+    int profit=credit-debit;
     setState(() {
       widget.month=='1'?billMonth='Jan':
       widget.month=='2'?billMonth='Feb':
@@ -39,7 +42,9 @@ class _TotalExpenseTableBodyState extends State<TotalExpenseTableBody> {
             children: [
               _tableBodyBuilder(size, '$billMonth-${widget.year!}'),
               _tableBodyBuilder(size, widget.headOfAccount!),
-              _tableBodyBuilder(size, widget.totalCost!),
+              _tableBodyBuilder(size, widget.credit!),
+              _tableBodyBuilder(size, widget.debit!),
+              _tableBodyBuilder(size,'$profit'),
             ],
           ),
           SizedBox(height: 5.0),

@@ -64,14 +64,14 @@ class BillingProvider extends ChangeNotifier{
         'amount': billingInfoModel.amount,
         'timeStamp': timeStamp,
         'payDate': billingInfoModel.payDate,
-      })
-          .then((value)async{
-        await FirebaseFirestore.instance.collection('totalCount').doc(monthYear).update({
-          'id':monthYear,
-          'debit': '$debit',
-          'credit': '$credit',
-          'currentBalance':'$pBalance'
-        })
+       })
+        //   .then((value)async{
+        // await FirebaseFirestore.instance.collection('totalCount').doc(monthYear).update({
+        //   'id':monthYear,
+        //   'debit': '$debit',
+        //   'credit': '$credit',
+        //   'currentBalance':'$pBalance'
+        // })
           .then((value)async{
           await FirebaseFirestore.instance.collection('totalBill').doc(monthYear).update({
           'id':monthYear,
@@ -86,7 +86,7 @@ class BillingProvider extends ChangeNotifier{
             showToast('Bill Paid');
           });
           });
-        });
+        //});
       }, onError: (error) {
         showToast(error.toString());
       });

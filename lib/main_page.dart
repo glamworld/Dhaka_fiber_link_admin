@@ -56,6 +56,7 @@ class _MainPageState extends State<MainPage> {
       headProvider.getBankBookDetails();
       headProvider.getHeadOfAccountBank();
       headProvider.getHeadOfAccountCash();
+      headProvider.getHeadOfAccountBill();
       headProvider.getTotalCount();
       headProvider.getExpenses();
       billingProvider.getTotalBill();
@@ -203,7 +204,7 @@ class SideBar extends StatelessWidget {
           ),
           SidebarContentBuilder(title: 'Cash Book'),
           SidebarContentBuilder(title: 'Bank Book'),
-          SidebarContentBuilder(title: 'Expenses'),
+          SidebarContentBuilder(title: 'Head'),
           SidebarContentBuilder(title: 'Summary'),
           SidebarContentBuilder(title: 'About Us'),
         ],
@@ -282,7 +283,7 @@ class NavigationDrawer extends StatelessWidget {
                 ),
                 SidebarContentBuilder(title: 'Cash Book'),
                 SidebarContentBuilder(title: 'Bank Book'),
-                SidebarContentBuilder(title: 'Expenses'),
+                SidebarContentBuilder(title: 'Head'),
                 SidebarContentBuilder(title: 'Summary'),
                 SidebarContentBuilder(title: 'About Us'),
               ],

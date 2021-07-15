@@ -181,7 +181,9 @@ class _ExpensesState extends State<Expenses> {
                   children: [
                     _tableHeaderBuilder(size, 'Month'),
                     _tableHeaderBuilder(size, 'Head Of Account'),
-                    _tableHeaderBuilder(size, 'Total Cost'),
+                    _tableHeaderBuilder(size, 'Credit'),
+                    _tableHeaderBuilder(size, 'Debit'),
+                    _tableHeaderBuilder(size, 'Profit'),
                   ],
                 ),
                 Divider(height: 5.0,color: Colors.grey.shade900)
@@ -202,7 +204,8 @@ class _ExpensesState extends State<Expenses> {
                 itemBuilder: (context,index)=>TotalExpenseTableBody(
                   month: filteredExpenses[index].month,
                   year: filteredExpenses[index].year,
-                  totalCost: filteredExpenses[index].totalCost,
+                  debit: filteredExpenses[index].debit,
+                  credit: filteredExpenses[index].credit,
                   headOfAccount: filteredExpenses[index].headOfAccount,
                 )
             ),
